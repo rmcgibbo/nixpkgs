@@ -1552,6 +1552,8 @@ in {
 
   cycler = callPackage ../development/python-modules/cycler { };
 
+  cylp = callPackage ../development/python-modules/cylp { };
+
   cymem = callPackage ../development/python-modules/cymem { };
 
   cypari2 = callPackage ../development/python-modules/cypari2 { };
@@ -4047,6 +4049,8 @@ in {
   minio = callPackage ../development/python-modules/minio { };
 
   miniupnpc = callPackage ../development/python-modules/miniupnpc { };
+
+  mip = callPackage ../development/python-modules/mip { };
 
   misaka = callPackage ../development/python-modules/misaka { };
 

@@ -10,7 +10,7 @@ stdenv.mkDerivation rec {
   };
 
   configureFlags = [ "-C" ];
-
+  dontStrip = true;
   enableParallelBuilding = true;
 
   hardeningDisable = [ "format" ];

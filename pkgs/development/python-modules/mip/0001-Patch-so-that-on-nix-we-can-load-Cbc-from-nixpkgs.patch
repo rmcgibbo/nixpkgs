@@ -1,0 +1,72 @@
+From df429d3b208885fac19275953ca601d07bc695c8 Mon Sep 17 00:00:00 2001
+From: "Robert T. McGibbon" <rmcgibbo@gmail.com>
+Date: Sun, 7 Feb 2021 16:25:41 -0500
+Subject: [PATCH 1/1] Patch so that on nix we can load Cbc from nixpkgs
+
+---
+ mip/cbc.py | 49 +++----------------------------------------------
+ 1 file changed, 3 insertions(+), 46 deletions(-)
+
+diff --git a/mip/cbc.py b/mip/cbc.py
+index a99228f..ff273d0 100644
+--- a/mip/cbc.py
++++ b/mip/cbc.py
+@@ -54,53 +54,10 @@ MAX_NAME_SIZE = 512
+
+ DEF_PUMPP = 30
+
+-try:
+-    pathmip = dirname(mip.__file__)
+-    pathlib = os.path.join(pathmip, "libraries")
+-    libfile = ""
+-    # if user wants to force the loading of an specific CBC library
+-    # (for debugging purposes, for example)
+-    if "PMIP_CBC_LIBRARY" in os.environ:
+-        libfile = os.environ["PMIP_CBC_LIBRARY"]
+-        pathlib = dirname(libfile)
+-
+-        if platform.lower().startswith("win"):
+-            if pathlib not in os.environ["PATH"]:
+-                os.environ["PATH"] += ";" + pathlib
+-    else:
+-        if "linux" in platform.lower():
+-            if os_is_64_bit:
+-                pathlibe = os.path.join(pathlib, "lin64")
+-                libfile = os.path.join(pathlibe, "libCbcSolver.so")
+-                if not exists(libfile):
+-                    pathlibe = pathlib
+-                    libfile = os.path.join(pathlib, "cbc-c-linux-x86-64.so")
+-                pathlib = pathlibe
+-            else:
+-                raise NotImplementedError("Linux 32 bits platform not supported.")
+-        elif platform.lower().startswith("win"):
+-            if os_is_64_bit:
+-                pathlibe = os.path.join(pathlib, "win64")
+-                libfile = os.path.join(pathlibe, "libCbcSolver-0.dll")
+-                if exists(libfile):
+-                    if pathlibe not in os.environ["PATH"]:
+-                        os.environ["PATH"] = pathlibe + ";" + os.environ["PATH"]
+-                else:
+-                    pathlibe = pathlib
+-                    libfile = os.path.join(pathlibe, "cbc-c-windows-x86-64.dll")
+-                    if pathlibe not in os.environ["PATH"]:
+-                        os.environ["PATH"] = pathlibe + ";" + os.environ["PATH"]
+-                pathlib = pathlibe
++libfile = "@cbc_library@"
++pathlib = dirname(libfile)
+
+-            else:
+-                raise NotImplementedError("Win32 platform not supported.")
+-        elif platform.lower().startswith("darwin") or platform.lower().startswith(
+-            "macos"
+-        ):
+-            if os_is_64_bit:
+-                libfile = os.path.join(pathlib, "cbc-c-darwin-x86-64.dylib")
+-        if not libfile:
+-            raise NotImplementedError("You operating system/platform is not supported")
++try:
+     old_dir = os.getcwd()
+     os.chdir(pathlib)
+     cbclib = ffi.dlopen(libfile)
+--
+2.29.2
