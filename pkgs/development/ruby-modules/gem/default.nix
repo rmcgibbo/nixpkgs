@@ -218,7 +218,7 @@ stdenv.mkDerivation ((builtins.removeAttrs attrs ["source"]) // {
     # looks like useless files which break build repeatability and consume space
     pushd $out/${ruby.gemPath}
     rm -fv doc/*/*/created.rid || true
-    rm -fv {gems/*/ext/*,extensions/*/*/*}/{Makefile,mkmf.log,gem_make.out} || true
+    rm -fv {gems/*/ext/*,gems/*/ext/*/*,extensions/*/*/*}/{Makefile,mkmf.log,gem_make.out} || true
     ${if keepGemCache then "" else "rm -fvr cache"}
     popd
 
